@@ -1,0 +1,18 @@
+div
+    input(type="hidden", name="id" value=room.id)
+div
+    label(for="name") Nome
+    input#name(type="text", name="name", value=room.name)
+div
+    label(for="floor") Piano
+    input#floor(type="text", name="floor", value=room.floor)
+div
+    label(for="capacity") Capacità
+    input#capacity(type="number", name="capacity", value=room.capacity)
+div 
+    label(for="archived_off") Attiva 
+    input#archived_off(type="radio", name="archived" value="false" checked=!room.archived)
+    label(for="archived_on") Archiviata 
+    input#archived_on(type="radio", name="archived" value="true" checked=room.archived)
+div
+    input(type="submit", value="Salva")

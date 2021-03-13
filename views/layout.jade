@@ -1,0 +1,9 @@
+doctype html
+html
+  head
+    title= title
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    script(src='/javascripts/index.bundle.js', defer)
+  body
+    a(href="#{env('POOL_BASE_URL')}/logout?client_id=#{env('CLIENT_ID')}&logout_uri=http://localhost:3000/auth/logoutCallback") logout
+    block content

@@ -1,0 +1,11 @@
+extends ../layout
+
+block content
+  h1= title
+  p Welcome to #{title}
+  a(href="/rooms/create") Crea stanza
+
+  ul
+  each val in rooms
+    li
+      a(href="/rooms/edit/#{val._id}")= val.name

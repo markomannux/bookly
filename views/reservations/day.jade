@@ -1,0 +1,39 @@
+extends ../layout
+
+block content
+  h1= title
+
+  div(class="flex items-center flex-wrap ")
+    div(class="items-center leading-none text-sm pr-3 py-1 border-r-2 border-gray-200")
+      a(href=prevLink) Precedente
+    div(class="items-center leading-none text-sm pr-3 py-1 border-r-2 border-gray-200")
+      span #{params.date}/#{params.month}/#{params.year}
+    div(class="items-center leading-none text-sm pr-3 py-1")
+      a(href=nextLink) Successivo
+
+  section(class="text-gray-600 body-font")
+    div(class="container px-5 py-24 mx-auto")
+      div(class="flex flex-wrap -m-4")
+        each room in rooms
+          div(class="p-4 md:w-1/3")
+            div(class="h-full border-2 border-gray-200 border-opacity-60 rounded-lg overflow-hidden")
+              img(class="lg:h-48 md:h-36 w-full object-cover object-center" src="https://dummyimage.com/720x400" alt="blog")
+              div(class="p-6")
+                h2(class="tracking-widest text-xs title-font font-medium text-gray-400 mb-1") Stanza
+                h1(class="title-font text-lg font-medium text-gray-900 mb-3")= room.name
+
+                each reservation in room.reservations
+                  div(class="flex items-center flex-wrap ")
+                    div(class="items-center leading-none text-sm pr-3 py-1")= reservation.user.name
+                    div(class="items-center leading-none text-sm pr-3 py-1")
+                      if(reservation.user._id.equals(user._id))
+                        a(href="/reservations/delete/#{reservation._id}", data-remote="true", data-method="delete") Annulla prenotazione
+                div(class="flex items-center flex-wrap ")
+                  span(class="text-gray-400 mr-3 inline-flex items-center lg:ml-auto md:ml-0 ml-auto leading-none text-sm pr-3 py-1") Posti #{room.capacityLeft}/#{room.capacity}
+                div
+                  form(action="/reservations/save", data-remote="true", method="post")
+                    input(type="hidden", name="year" value=params.year)
+                    input(type="hidden", name="month" value=params.month)
+                    input(type="hidden", name="date" value=params.date)
+                    input(type="hidden", name="room", value=room._id)
+                    input(type="submit", value="Prenota" class="flex mx-auto mt-16 text-white bg-green-500 border-0 py-2 px-8 focus:outline-none hover:bg-green-600 rounded text-lg")

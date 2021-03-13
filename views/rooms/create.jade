@@ -1,0 +1,9 @@
+extends ../layout
+
+block content
+  h1= title
+
+  form(action="/rooms/save", method="post") 
+    - if (err)
+      div Si è verificato un errore
+    include ./form.jade
