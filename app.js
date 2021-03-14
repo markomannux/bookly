@@ -16,6 +16,7 @@ const mongoOptions = {
   useNewUrlParser: true,
   useUnifiedTopology: true 
 }
+mongoose.set('useFindAndModify', false);
 const clientPromise = mongoose.connect(process.env.MONGO_URI, mongoOptions).then(() => mongoose.connection.getClient()
 )
 
@@ -23,6 +24,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var roomsRouter = require('./routes/rooms');
 var reservationsRouter = require('./routes/reservations');
+var basecampAuthRouter = require('./routes/basecamp-auth');
 
 var app = express();
 
@@ -69,10 +71,20 @@ app.locals.env = env
 
 passportCognitoStrategy(app, passport)
 
+
+
+async function isLoggedToBasecamp(req, res, next) {
+  const user = await User.findById(req.user._id)
+  if (!user.basecamp ||!user.basecamp.access_token || !user.basecamp.access_token.content) {
+    return res.redirect('/auth/basecamp/start')
+  }
+  return next()
+}
 app.use('/', authUtils.isLoggedIn, indexRouter);
 app.use('/users', authUtils.isLoggedIn, authUtils.hasRole('admin'), usersRouter);
 app.use('/rooms', authUtils.isLoggedIn, authUtils.hasRole('admin'), roomsRouter);
-app.use('/reservations', authUtils.isLoggedIn, reservationsRouter);
+app.use('/reservations', authUtils.isLoggedIn, isLoggedToBasecamp, reservationsRouter);
+app.use('/auth/basecamp', authUtils.isLoggedIn, basecampAuthRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

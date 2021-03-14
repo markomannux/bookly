@@ -11,7 +11,18 @@ const userSchema = new Schema({
   email: {
     type: String
   },
-  roles: [String]
+  roles: [String],
+  basecamp: {
+    access_token: {
+      iv: String,
+      content: String
+    },
+    refresh_token: {
+      iv: String,
+      content: String
+    },
+    expires_at: Date
+  } 
 })
 
 const User = mongoose.model('User', userSchema);
