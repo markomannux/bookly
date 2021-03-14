@@ -11,6 +11,7 @@ const passport = require('passport')
 const passportCognitoStrategy = require('./utils/passport-strategies/cognito')
 const authUtils = require('./utils/auth-utils')
 const User = require('./model/user');
+const flash = require('flash')
 
 const mongoOptions = {
   useNewUrlParser: true,
@@ -44,6 +45,7 @@ const sessionMiddleware = session({
 })
 
 app.use(sessionMiddleware);
+app.use(flash())
 app.sessionMiddleware = sessionMiddleware // Storing a reference to session middleware for use in other modules
 
 app.use(logger('dev'));

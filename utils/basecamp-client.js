@@ -6,6 +6,7 @@ const memembed = new Memembed();
 const BC3_CLIENT_ID = process.env.BC3_CLIENT_ID
 const BC3_CLIENT_SECRET = process.env.BC3_CLIENT_SECRET
 const BC3_API_BASE_URL = process.env.BC3_API_BASE_URL
+const BASE_URL = process.env.BASE_URL || 'http://localhost:3000'
 
 const config = {
   client: {
@@ -22,7 +23,7 @@ const config = {
 const oAuth2Client = new AuthorizationCode(config);
 
 const authorizationUri = oAuth2Client.authorizeURL({
-    redirect_uri: 'http://localhost:3000/auth/basecamp/callback',
+    redirect_uri: `${BASE_URL}/auth/basecamp/callback`,
     type: 'web_server'
 });
 
@@ -30,7 +31,7 @@ function getToken(code) {
     const options = {
       code,
       type: 'web_server',
-      redirect_uri: 'http://localhost:3000/auth/basecamp/callback',
+      redirect_uri: `${BASE_URL}/auth/basecamp/callback`,
       client_id: BC3_CLIENT_ID,
       client_secret: BC3_CLIENT_SECRET
     };

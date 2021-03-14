@@ -39,7 +39,8 @@ router.post('/save', async function(req, res, next) {
   })
 
   if (alreadyReserved) {
-    res.redirect(dayLink(date))
+    req.flash('alert', 'Esiste già una prenotazione per questo giorno')
+    redirect(res, dayLink(date))
     return
   }
 
