@@ -11,8 +11,8 @@ const reservationSchema = new Schema({
         type: Schema.Types.ObjectId, ref: 'Room' ,
         required: true
     },
-    user: {
-        type: Schema.Types.ObjectId, ref: 'User'
+    employee: {
+        type: Schema.Types.String, ref: 'Employee'
     }
 })
 

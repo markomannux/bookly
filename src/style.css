@@ -12,3 +12,9 @@ body {
 a {
   color: #00B7FF;
 }
+
+.inset-center {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0);
+}

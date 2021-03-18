@@ -4,6 +4,10 @@ var WebpackShellPluginNext = require('webpack-shell-plugin-next');
 module.exports = [{
     target: "web",
     watch: true,
+    watchOptions: {
+       poll: true,
+      ignored: /node_modules/
+    },
     devtool: 'inline-source-map',
     entry: {
         index: './src/index.js',
@@ -13,7 +17,9 @@ module.exports = [{
         filename: '[name].bundle.js'
     },
     plugins: [
-        new WebpackShellPluginNext({onBuildStart:{scripts: ['echo "Webpack Start"']}, onBuildEnd:{scripts: ['nodemon ./bin/www']}}),
+    //    new WebpackShellPluginNext({
+    //      onBuildStart:{scripts: ['echo "Webpack Start"']},
+    //      onBuildEnd:{scripts: ["nodemon ./bin/www --ignore public/ --ignore src/"]}}),
     ],
     module: {
     rules: [

@@ -55,14 +55,14 @@ Room.roomsWithReservations = async (year, month, date) => {
             }
             }, {
             '$lookup': {
-                'from': 'users', 
-                'localField': 'user', 
+                'from': 'employees', 
+                'localField': 'employee', 
                 'foreignField': '_id', 
-                'as': 'user'
+                'as': 'employee'
             }
             }, {
             '$unwind': {
-                'path': '$user'
+                'path': '$employee'
             }
             }
         ], 

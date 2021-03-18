@@ -3,6 +3,7 @@ var router = express.Router();
 const {encrypt, decrypt} = require('../utils/crypto')
 const BasecampClient = require('../utils/basecamp-client')
 const User = require('../model/user');
+const Employee = require('../model/employee')
 
 router.get('/start', async function(req, res, next) {
   res.render('basecamp-auth/start')
@@ -28,7 +29,27 @@ router.get('/callback', async function(req, res, next) {
         expires_at: accessToken.token.expires_at
       }
       
+      /*
+       * Now, this is useless since we are targeting a specific BC account
+       */
       const authorization = await BasecampClient.getAuthorization(accessToken.token.access_token)
+
+      const profile = await BasecampClient.myProfile(accessToken.token.access_token)
+
+      const employee = await Employee.findByIdAndUpdate(
+        profile.id,
+        {
+          _id: profile.id,
+          name: profile.name,
+          email: profile.email_address,
+          avatarUrl: profile.avatar_url
+        },
+        {
+            upsert: true
+        }
+      )
+
+      user.employee = employee._id
       await user.save()
 
       return res.status(200).json(accessToken.token);

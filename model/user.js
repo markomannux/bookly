@@ -22,7 +22,11 @@ const userSchema = new Schema({
       content: String
     },
     expires_at: Date
-  } 
+  },
+  employee: {
+      type: Schema.Types.String, ref: 'Employee' ,
+      required: false
+  },
 })
 
 const User = mongoose.model('User', userSchema);

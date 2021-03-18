@@ -61,12 +61,33 @@ function myProfile(access_token) {
     })
 }
 
+function getPerson(access_token, id) {
+    const uri = `${BC3_API_BASE_URL}/people/${id}.json`
+    return doCacheableGet({
+        uri,
+        access_token,
+    })
+}
+
 function getPingablePeople(access_token) {
     const uri = `${BC3_API_BASE_URL}/circles/people.json`
     return doCacheableGet({
         uri,
         access_token,
     })
+}
+
+function getColleagues(access_token) {
+    return getPingablePeople(access_token)
+    .then(people => {
+        return people.reduce((prev, curr) => {
+            if (!curr.client && curr.personable_type === 'User') {
+                prev.push(curr)
+            }
+            return prev
+        }, [])
+    })
+
 }
 
 async function doCacheableGet(cacheableGetOptions) {
@@ -113,5 +134,7 @@ module.exports = {
     getToken,
     getAuthorization,
     myProfile,
-    getPingablePeople
+    getPerson,
+    getPingablePeople,
+    getColleagues
 }

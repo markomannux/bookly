@@ -2,6 +2,8 @@ extends ../layout
 
 block head 
   meta(name="turbolinks-cache-control" content="no-cache")
+  meta(name='page', content='reservations-day')
+
 
 block content
   div(class="container px-5 mx-auto")
@@ -34,24 +36,70 @@ block content
       div(class="flex flex-wrap -m-4")
         each room in rooms
           div(class="p-4 md:w-1/3")
-            div(class="h-full border-2 border-gray-200 border-opacity-60 rounded-lg overflow-hidden")
+            div(class="relative pb-20 h-full border-2 border-gray-200 border-opacity-60 rounded-lg overflow-hidden")
               img(class="lg:h-48 md:h-36 w-full object-cover object-center" src="https://dummyimage.com/720x400" alt="blog")
               div(class="p-6")
-                h2(class="tracking-widest text-xs title-font font-medium text-gray-400 mb-1") Stanza
+                div(class="flex items-center flex-wrap ")
+                  h2(class="tracking-widest text-xs title-font font-medium text-gray-400 mb-1") Stanza
+                  span(class="text-gray-400 mr-3 inline-flex items-center lg:ml-auto md:ml-0 ml-auto leading-none text-sm pr-3 py-1") Posti #{room.capacityLeft}/#{room.capacity}
                 h1(class="title-font text-lg font-medium text-gray-900 mb-3")= room.name
 
+                if (room.reservations.length === 0)
+                  div.flex.justify-center.content-center.mt-12.mb-12
+                    div Ancora nessuna prenotazione ✨
+
                 each reservation in room.reservations
-                  div(class="flex items-center flex-wrap ")
-                    div(class="items-center leading-none text-sm pr-3 py-1")= reservation.user.name
-                    div(class="items-center leading-none text-sm pr-3 py-1")
-                      if(reservation.user._id.equals(user._id))
-                        a(href="/reservations/delete/#{reservation._id}", data-remote="true", data-method="delete") Annulla prenotazione
-                div(class="flex items-center flex-wrap ")
-                  span(class="text-gray-400 mr-3 inline-flex items-center lg:ml-auto md:ml-0 ml-auto leading-none text-sm pr-3 py-1") Posti #{room.capacityLeft}/#{room.capacity}
-                div
-                  form(action="/reservations/save", data-remote="true", method="post")
-                    input(type="hidden", name="year" value=params.year)
-                    input(type="hidden", name="month" value=params.month)
-                    input(type="hidden", name="date" value=params.date)
-                    input(type="hidden", name="room", value=room._id)
-                    input(type="submit", value="Prenota" class="flex mx-auto mt-16 text-white bg-green-500 border-0 py-2 px-8 focus:outline-none hover:bg-green-600 rounded text-lg")
+
+                  div(class="inline-flex items-center")
+                    img(alt=reservation.employee.name src=reservation.employee.avatarUrl class="w-12 h-12 rounded-full flex-shrink-0 object-cover object-center")
+                    span(class="flex-grow flex flex-col pl-4")
+                      span(class="title-font font-medium text-gray-900")= reservation.employee.name
+                      span(class="text-gray-500 text-sm")
+                        a(class="text-gray-500 text-sm" href="/reservations/delete/#{reservation._id}", data-remote="true", data-method="delete") Annulla prenotazione
+
+              div(class="absolute bottom-4 inset-center")
+                form(action="/reservations/save", data-remote="true", method="post")
+                  input(type="hidden", name="year" value=params.year)
+                  input(type="hidden", name="month" value=params.month)
+                  input(type="hidden", name="date" value=params.date)
+                  input(type="hidden", name="room", value=room._id)
+                  input(type="hidden", name="employee", value=user.employee)
+                  input(type="submit", value="Prenota" class="flex mx-auto text-white bg-green-500 border-0 py-2 px-8 focus:outline-none hover:bg-green-600 rounded text-lg")
+                div(class="text-xs mt-3")
+                  a(href="#" class="text-gray-500" data-behavior="show-others-link" data-room=room._id.toString()) Prenota per un collega
+                
+
+   .modal.opacity-0.pointer-events-none.fixed.w-full.h-full.top-0.left-0.flex.items-center.justify-center
+    .modal-overlay.absolute.w-full.h-full.bg-gray-900.opacity-50
+    .modal-container.bg-white.mx-auto.rounded.shadow-lg.z-50.overflow-y-auto(class='w-11/12 md:max-w-md')
+      .modal-close.absolute.top-0.right-0.cursor-pointer.flex.flex-col.items-center.mt-4.mr-4.text-white.text-sm.z-50
+        svg.fill-current.text-white(xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 18 18')
+          path(d='M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z')
+        span.text-sm (Esc)
+      // Add margin if you want to see some of the overlay behind the modal
+      .modal-content.py-4.text-left.px-6
+        // Title
+        .flex.justify-between.items-center.pb-3
+          p.text-2xl.font-bold Prenota per un collega
+          .modal-close.cursor-pointer.z-50
+            svg.fill-current.text-black(xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 18 18')
+              path(d='M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z')
+        // Body
+        .overflow-y-scroll.h-80
+          .flex.flex-col
+            each person in people
+              div(class="inline-flex items-center mb-2")
+                img(alt=person.name src=person.avatar_url class="w-12 h-12 rounded-full flex-shrink-0 object-cover object-center")
+                span(class="flex-grow flex flex-col pl-4")
+                  span(class="title-font font-medium text-gray-900")= person.name
+                button(class="flex mx-auto text-white bg-green-500 border-0 py-1 px-3 focus:outline-none hover:bg-green-600 rounded text-sm mr-4" data-behavior="book-for-colleague" data-employee=person.id) Prenota
+        // Footer
+        .flex.justify-end.pt-2
+          button.modal-close.px-4.bg-indigo-500.p-3.rounded.text-white(class='hover:bg-indigo-400') Chiudi
+
+      form#colleague(action="/reservations/save", data-remote="true", method="post")
+        input(type="hidden", name="year" value=params.year)
+        input(type="hidden", name="month" value=params.month)
+        input(type="hidden", name="date" value=params.date)
+        input(type="hidden", name="employee")
+        input(type="hidden", name="room")
